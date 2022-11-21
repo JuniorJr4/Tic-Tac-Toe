@@ -1,0 +1,16 @@
+.grid-container {
+    width: 500px;
+    height: 500px;
+}
+
+.board-grid {
+    display: grid;
+    width: 500px;
+    height: 500px;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+.cell {
+    border: 1px solid black;
+}
