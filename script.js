@@ -1,13 +1,8 @@
-// const makePlayer = (player, piece, turn) => {
-//   return { player, piece, turn };
-// };
+const makePlayer = (player, piece, turn, winner) => {
+  return { player, piece, turn, winner };
+};
 
 const gameBoard = (() => {
-  const makePlayer = (player, piece, turn) => {
-    return { player, piece, turn };
-  };
-  const player1 = makePlayer("Name", "X", false);
-  const computerPlayer = makePlayer("Robot", "O", true);
   let board = [];
 
   for (let i = 0; i < 9; i++) {
@@ -27,19 +22,19 @@ const gameBoard = (() => {
   const boardCells = document.querySelectorAll(".cell");
   boardCells.forEach((square, index) => {
     square.addEventListener("click", () => {
-      player1.turn
-        ? ((square.textContent = player1.piece),
+      gameEngine.player1.turn
+        ? ((square.textContent = gameEngine.player1.piece),
           (square.style.pointerEvents = "none"),
-          (board[index] = player1.piece),
-          (player1.turn = false),
-          (computerPlayer.turn = true),
+          (board[index] = gameEngine.player1.piece),
+          (gameEngine.player1.turn = false),
+          (gameEngine.computerPlayer.turn = true),
           gameEngine.checkForWinner(),
           console.log(board))
-        : ((square.textContent = computerPlayer.piece),
+        : ((square.textContent = gameEngine.computerPlayer.piece),
           (square.style.pointerEvents = "none"),
-          (board[index] = computerPlayer.piece),
-          (player1.turn = true),
-          (computerPlayer.turn = false),
+          (board[index] = gameEngine.computerPlayer.piece),
+          (gameEngine.player1.turn = true),
+          (gameEngine.computerPlayer.turn = false),
           gameEngine.checkForWinner(),
           console.log(board));
     });
@@ -47,13 +42,14 @@ const gameBoard = (() => {
 
   return {
     board,
-    player1,
-    computerPlayer,
   };
 })();
 
 const gameEngine = (() => {
-  var playerWon;
+  const player1 = makePlayer("Name", "X", false, false);
+  const computerPlayer = makePlayer("Robot", "O", true, false);
+
+  var thereIsAWinner;
   const weHaveAWinner = [
     [0, 1, 2],
     [3, 4, 5],
@@ -64,42 +60,49 @@ const gameEngine = (() => {
     [0, 4, 8],
     [2, 4, 6],
   ];
-  // return {
-  //   player1,
-  //   computerPlayer,
-  // };
+
   const gameOver = () => {
-    const gameOverMsg = document.querySelector('.game-over');
-    if (playerWon) {
-      gameOverMsg.textContent = `${gameBoard.player1.player} wins!`;
+    const gameOverMsg = document.querySelector(".game-over");
+    if (player1.winner) {
+      gameOverMsg.textContent = `${player1.player} wins!`;
+    } else if (computerPlayer) {
+      gameOverMsg.textContent = `${computerPlayer.player} wins!`;
     }
-  }
+  };
 
   // const checkForTie = () => {
-  //   if (something)
+  //   var tie = gameBoard.includes('');
+  //   if (gameBoard.board)
   // }
   const checkForWinner = () => {
+    var tie = gameBoard.board.includes("");
     weHaveAWinner.forEach((row) => {
       if (
         gameBoard.board[row[0]] === gameBoard.board[row[1]] &&
         gameBoard.board[row[1]] === gameBoard.board[row[2]] &&
-        gameBoard.board[row[2]] === gameBoard.player1.piece
+        gameBoard.board[row[2]] === player1.piece
       ) {
-        playerWon = true;
+        thereIsAWinner = true;
+        player1.winner = true;
         gameOver();
         console.log("Xwins");
+        return true;
       } else if (
         gameBoard.board[row[0]] === gameBoard.board[row[1]] &&
         gameBoard.board[row[1]] === gameBoard.board[row[2]] &&
-        gameBoard.board[row[2]] === gameBoard.computerPlayer.piece
+        gameBoard.board[row[2]] === computerPlayer.piece
       ) {
-        playerWon = false;
+        computerPlayer.winner = true;
         console.log("Owins");
+        gameOver();
+        return true;
       }
     });
   };
 
   return {
     checkForWinner,
+    player1,
+    computerPlayer,
   };
 })();
