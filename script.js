@@ -1,3 +1,7 @@
+const boardGrid = document.querySelector(".board-grid");
+const gameInfo = document.querySelector('.info');
+
+
 const makePlayer = (player, piece, turn, winner) => {
   return { player, piece, turn, winner };
 };
@@ -8,15 +12,6 @@ const gameBoard = (() => {
   for (let i = 0; i < 9; i++) {
     board.push("");
   }
-
-  let boardGrid = document.querySelector(".board-grid");
-
-  board.forEach((square, index) => {
-    const cell = document.createElement("div");
-    cell.className = "cell";
-    cell.textContent = square;
-    boardGrid.appendChild(cell);
-  });
 
   // ADD EVENT LISTENER FOR EACH CELL
   const boardCells = document.querySelectorAll(".cell");
@@ -29,6 +24,7 @@ const gameBoard = (() => {
           (gameEngine.player1.turn = false),
           (gameEngine.computerPlayer.turn = true),
           gameEngine.checkForWinner(),
+          (gameInfo.textContent = 'Robot it is your turn'),
           console.log(board))
         : ((square.textContent = gameEngine.computerPlayer.piece),
           (square.style.pointerEvents = "none"),
@@ -36,6 +32,7 @@ const gameBoard = (() => {
           (gameEngine.player1.turn = true),
           (gameEngine.computerPlayer.turn = false),
           gameEngine.checkForWinner(),
+          (gameInfo.textContent = "Player One's turn"),
           console.log(board));
     });
   });
@@ -46,10 +43,9 @@ const gameBoard = (() => {
 })();
 
 const gameEngine = (() => {
-  const player1 = makePlayer("Name", "X", false, false);
+  const player1 = makePlayer('Player1', "X", false, false);
   const computerPlayer = makePlayer("Robot", "O", true, false);
 
-  var thereIsAWinner;
   const weHaveAWinner = [
     [0, 1, 2],
     [3, 4, 5],
@@ -61,41 +57,39 @@ const gameEngine = (() => {
     [2, 4, 6],
   ];
 
-  const gameOver = () => {
+  const gameOver = (whoWon) => {
     const gameOverMsg = document.querySelector(".game-over");
-    if (player1.winner) {
+    if (whoWon === 'player') {
       gameOverMsg.textContent = `${player1.player} wins!`;
-    } else if (computerPlayer) {
+    } else if (whoWon === 'computer') {
       gameOverMsg.textContent = `${computerPlayer.player} wins!`;
+    } else {
+      gameOverMsg.textContent =  'Game ended as a draw'
     }
   };
 
-  // const checkForTie = () => {
-  //   var tie = gameBoard.includes('');
-  //   if (gameBoard.board)
-  // }
   const checkForWinner = () => {
     var tie = gameBoard.board.includes("");
+    var winner;
     weHaveAWinner.forEach((row) => {
       if (
         gameBoard.board[row[0]] === gameBoard.board[row[1]] &&
         gameBoard.board[row[1]] === gameBoard.board[row[2]] &&
         gameBoard.board[row[2]] === player1.piece
       ) {
-        thereIsAWinner = true;
-        player1.winner = true;
-        gameOver();
+        gameOver('player');
         console.log("Xwins");
-        return true;
+        winner = true;
       } else if (
         gameBoard.board[row[0]] === gameBoard.board[row[1]] &&
         gameBoard.board[row[1]] === gameBoard.board[row[2]] &&
         gameBoard.board[row[2]] === computerPlayer.piece
       ) {
-        computerPlayer.winner = true;
         console.log("Owins");
-        gameOver();
-        return true;
+        gameOver('computer');
+        winner = true;
+      } else if (!tie && !winner) {
+        gameOver('tied');
       }
     });
   };
