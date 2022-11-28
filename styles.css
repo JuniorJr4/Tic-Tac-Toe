@@ -13,12 +13,17 @@ body {
   align-items: center;
   justify-content: center;
   background-color: var(--cool-tan);
-  color:  var(--cool-red)
+  color: var(--cool-red);
+  margin: 0;
 }
 
-.grid-container {
-  width: 500px;
-  height: 500px;
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--cool-purple);
+  width: 100%;
 }
 
 .board-grid {
@@ -30,6 +35,15 @@ body {
   grid-template-rows: 1fr 1fr 1fr;
   background-color: var(--cool-orange);
   border-radius: 5px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+@media  screen and (max-width: 500px) {
+  .board-grid {
+    aspect-ratio: 1/1;
+    width: 90%;
+    height: auto;
+  }
 }
 
 .cell {
@@ -37,14 +51,36 @@ body {
   justify-content: center;
   align-items: center;
   border-radius: 5px;
-  
   background-color: var(--cool-red);
   color: var(--cool-purple);
   font-size: 6rem;
   font-weight: 900;
+}
 
+.cell:hover {
+  background-color: var(--cool-orange);
 }
 
 .game-info {
   height: 50px;
+}
+
+.btn {
+  height: 45px;
+  width: 100px;
+  font-weight: bold;
+  border-radius: 10px;
+  border: 3px solid var(--cool-red);
+  background-color: var(--cool-purple);
+  color: var(--cool-red);
+}
+
+.btn:hover {
+  border: 3px solid var(--cool-purple);
+  background-color: var(--cool-red);
+  color: var(--cool-purple);
+}
+
+.restart {
+  height: 60px;
 }
